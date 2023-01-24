@@ -18,7 +18,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.camnum = 2
+        self.camnum = 0
         self.match = False
 
         #List of previously stored data
@@ -39,7 +39,7 @@ class MainWindow(QMainWindow):
                 num = int(num)
                 self.camnum = num
         except:
-            self.camnum = 2
+            self.camnum = 0
 
 
 
@@ -104,7 +104,12 @@ class MainWindow(QMainWindow):
         Camera input is taken by a timer
         """
         #Getting frame from webcam
-        _, image = self.cap.read()
+        located, image = self.cap.read()
+
+        if not located:
+            self.msg('Error','Error loading camera please make sure you are selecting the correct camera',QMessageBox.Critical)
+            os._exit(0)
+
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
         if self.match:
